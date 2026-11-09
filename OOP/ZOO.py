@@ -10,35 +10,72 @@ class Zoo:
         self.entryCost = entryCost
         self.animals = []
         
-    def loadAnimals(self):
-        pass
+    def loadAnimals(self, flag):
+        try:
+            with open("ZooAnimals.JSON", "r") as ZA:
+                listobj = json.load(ZA)
+            
+            if flag:
+                return listobj
+            else:
+                for animal in listobj:
+                    self.addAnimal(animal)
+        except FileNotFoundError as FNE:
+            print(f"Could not find file {FNE.filename}")
+            
+            return []
+            
+        if flag:
+            return listobj  
+    
+    
     
     def addAnimal(self, animalInfo):
         
-        {
-            "animalType": "Lion",
-            "animalName": "Bob",
-            "animalAge": 12,
-            "claws" : 10
-        }
-         
-        if animalInfo.animalType == "Lion":
-            L = Lion(animalInfo.name, animalInfo.age, animalInfo.claws)
+           
+        if animalInfo.get('animalType') == "Lion":
+            L = Lion(animalInfo.get('name'), animalInfo.get('age'), animalInfo.get('claws'))
             self.animals.append(L)
-            with open("ZooAnimals.JSON", "w") as ZA:
-                json.dump(animalInfo,ZA)
+            
+            newListDict = self.loadAnimals(True)
+            newListDict.append(animalInfo)
+            self.storeAnimals(newListDict)
+            
+        
                 
-        if animalInfo.animalType == "Snake":
-            S = Snake(animalInfo.name, animalInfo.age, animalInfo.vpotent)
+        elif animalInfo.get('animalType') == "Snake":
+            S = Snake(animalInfo.get('name'), animalInfo.get('age'), animalInfo.get('vpotent'))
             self.animals.append(S)
-            with open("ZooAnimals.JSON", "w") as ZA:
-                json.dump(animalInfo,ZA)
+            
+            newListDict = self.loadAnimals(True)
+            newListDict.append(animalInfo)
+            self.storeAnimals(newListDict)
                         
-        if animalInfo.animalType == "Lion":
-                Z = Zebra(animalInfo.name, animalInfo.age, animalInfo.stripes)
+            
+                        
+        elif animalInfo.get('animalType') == "Zebra":
+                Z = Zebra(animalInfo.get('name'), animalInfo.get('age'), animalInfo.get('stripes'))
                 self.animals.append(Z)
-                with open("ZooAnimals.JSON", "w") as ZA:
-                    json.dump(animalInfo,ZA)
+                
+                newListDict = self.loadAnimals(True)
+                newListDict.append(animalInfo)
+                self.storeAnimals(newListDict)
+                            
+                
+                
+                
+                    
+    def storeAnimals(self, animalInfo):
+        try:
+            with open("ZooAnimals.JSON", "w") as ZA:
+                json.dump(animalInfo,ZA, indent=4)
+        except FileNotFoundError as FNE:
+            print(f"Could not find file {FNE.filename}")
+            
+            return []
+            
+            
+        
         
         
 
